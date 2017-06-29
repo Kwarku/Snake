@@ -54,7 +54,9 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
     private int lenghtofsnake=3;
 
     private int score=0;
-    private int bestscore;
+    private final static int MAX_SIZE_SCORE=10000; // wielkosc tablicy z wynikami
+    private int[] tab= new int[MAX_SIZE_SCORE];
+
 
     private Timer timer;
     private int deley=100;  // szybkosc węża
@@ -70,28 +72,10 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
         setFocusTraversalKeysEnabled(false);
         timer =new Timer(deley,this);
         timer.start();
+        createFile();
+        readScore();
 
     }
-
-
-   /* // staranie wydruku wyniku do pliku
-    public void scorer(){
-        if (!play && score>0){
-            BufferedWriter writer = null;
-            try
-            {
-                String filename= "score.txt";
-                FileWriter fw = new FileWriter(filename,true); //the true will append the new data
-                fw.write(score+"\n");//appends the string to the file
-                fw.close();
-            }
-            catch(IOException ioe)
-            {
-                System.err.println("IOException: " + ioe.getMessage());
-            }
-
-        }*/
-
 
 
     // rysowanie obiektów, dobra praktyka jest tak to nazywac czyli
@@ -182,6 +166,8 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
          xpos=random.nextInt(enemyxpos.length);
          ypos=random.nextInt(enemyypos.length);
          score+=10;
+
+         
         }
 
 
@@ -193,6 +179,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
                 down=false;
                 up=false;
                 play=false;
+                writeScore();
 
 
 
@@ -206,28 +193,18 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
                 g.drawString("Kliknij Spacje zeby zrestartowac",315,380);
 
 
-                // zapisywanie wyniku w pliku na koncu listy
-                try
-                {
-                    String filename= "score.txt";
-                    FileWriter fw = new FileWriter(filename,true); //the true will append the new data
-                    fw.write(score+", \n");//appends the string to the file
-                    fw.close();
-                }
-                catch(IOException ioe)
-                {
-                    System.err.println("IOException: " + ioe.getMessage());
-                }
+
 
             }
         }
 
-            /*
+
             //wyswietlanie najwiekszego wyniku
             g.setColor(Color.white);
             g.setFont(new Font("arial",Font.PLAIN,15));
-            g.drawString("Najlepszy wynik: "+ bestscore,100,45);
-            */
+            g.drawString("Najlepszy wynik: " + tab[MAX_SIZE_SCORE-1],100,45);
+
+
 
             // menu opcji
             if (move==0){
@@ -270,6 +247,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
                     snakexlength[r]=25; }    // to wraca w lewej strony
             }
             repaint();
+
         }
         if (left){
             for (int r=lenghtofsnake-1;r>=0;r--){
@@ -282,6 +260,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
             }
             repaint();
 
+
         }
          if (up){
              for (int r=lenghtofsnake-1;r>=0;r--){
@@ -293,6 +272,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
                      snakeylength[r]=625; }
              }
              repaint();
+
 
         }
         if (down){
@@ -321,6 +301,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
         /*Jezeli klikamy w prawo to automatycznie musi zostac zablokowany kazdy inny kierunek
         zeby nasz kod w Graphics mogl wczytac odpowieni wyglad głowy
         * */
+
         if (e.getKeyCode()==KeyEvent.VK_RIGHT || e.getKeyCode()==KeyEvent.VK_D)
         {
             move++;  // musimy zmienic z 0 bo inaczej nie ruszyl by sie przez wczesniejszy kod
@@ -330,9 +311,11 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
             } else{
                    right=false; // jezeli idize w prawo to nie moze isc w lewo
                    left=true;
+
                 }
             down=false;
             up=false;
+
         }
 
         if (e.getKeyCode()==KeyEvent.VK_LEFT || e.getKeyCode()==KeyEvent.VK_A)
@@ -347,6 +330,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
             }
             down=false;
             up=false;
+
         }
 
         if (e.getKeyCode()==KeyEvent.VK_UP || e.getKeyCode()==KeyEvent.VK_W)
@@ -378,7 +362,10 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
         }
 
         // wylaczenie gry
-        if (e.getKeyCode()==KeyEvent.VK_ESCAPE){System.exit(0);}
+        if (e.getKeyCode()==KeyEvent.VK_ESCAPE){
+            System.exit(0);
+            writeScore();
+        }
 
         // uruchomienie po smierci
         if (e.getKeyCode()==KeyEvent.VK_SPACE && play==false){
@@ -391,6 +378,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
             lenghtofsnake=3;
             repaint();
             play=true;
+            readScore();
         }
 
         //pauza
@@ -432,5 +420,65 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    public void createFile(){
+        String fileName = "scores.txt";
+        File file = new File(fileName);
+        boolean fileExists = file.exists();
+
+        if (!fileExists){
+            try{
+                fileExists = file.createNewFile();
+            } catch (IOException e) {
+                System.err.println("File can not be created if you can please give me some space to make one file");
+            }
+        }
+
+    }
+
+    public void writeScore(){
+        // zapisywanie wyniku w pliku na koncu listy
+        try
+        {
+            String fileName= "scores.txt";
+            FileWriter fw = new FileWriter(fileName,true); //the true will append the new data
+            fw.write(score + "\n");//appends the string to the file
+            fw.close();
+        }
+        catch(IOException e)
+        {
+            System.err.println("IOException: " + e.getMessage());
+        }
+    }
+
+    public void readScore() {
+        String fileName = "scores.txt";
+
+        File file = new File(fileName);
+        try{
+            Scanner scan = new Scanner(file);
+            int lines=0;
+            while (scan.hasNextInt()){
+                tab[lines] = scan.nextInt();
+                lines++;
+            }
+            Arrays.sort(tab);
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+    public void w8(){
+        try {
+            Thread.sleep(40);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

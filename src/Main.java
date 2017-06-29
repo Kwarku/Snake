@@ -1,5 +1,7 @@
 import javax.swing.JFrame;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Pawel on 22.06.2017.
@@ -16,6 +18,9 @@ public class Main {
         obj.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // co wyłączy nasz program
         obj.add(gameplay); // dodajemy obiekt z klasy Gameplay czyli wszystko xD
         obj.setTitle("Snake");
+
+
+
 
 
 
