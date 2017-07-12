@@ -190,7 +190,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
                 g.drawString("Game Over",330,350);
                 g.setColor(Color.white);
                 g.setFont(new Font("arial",Font.BOLD,20));
-                g.drawString("Kliknij Spacje zeby zrestartowac",315,380);
+                g.drawString("Kliknij [Spacje] zeby zrestartowac",315,380);
 
 
 
@@ -213,10 +213,10 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
                 g.drawString("Wybierz poziom trudnosci: ",330,330);
 
                 g.setFont(new Font("arial",Font.PLAIN,18));
-                g.drawString("Latwy, kliknij 1 ",330,350);
-                g.drawString("Sredni, klinkij 2 ",329,370);
-                g.drawString("Trudny, kliknij 3  ",328,390);
-                g.drawString("Bardzo trudny, kliknij 4  ",329,410);
+                g.drawString("Latwy, kliknij [1] ",330,350);
+                g.drawString("Sredni, klinkij [2] ",329,370);
+                g.drawString("Trudny, kliknij [3]  ",328,390);
+                g.drawString("Bardzo trudny, kliknij [4]  ",329,410);
 
             }
 
@@ -231,6 +231,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
     //akcja w grze
     @Override
     public void actionPerformed(ActionEvent e) {
+        int x =50;
         timer.start();
         //play=true;
         /* zeby waz poruszal sie prawidlowo to: kazdy kolejny wyraz tablicy
@@ -246,7 +247,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
                 if (snakexlength[r]>850){ //jezeli wychodzi poza ekran
                     snakexlength[r]=25; }    // to wraca w lewej strony
             }
-            repaint();
+            repaint(x);
 
         }
         if (left){
@@ -258,7 +259,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
                 if (snakexlength[r]<25){
                     snakexlength[r]=850; }
             }
-            repaint();
+            repaint(x);
 
 
         }
@@ -271,7 +272,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
                  if (snakeylength[r]<75){
                      snakeylength[r]=625; }
              }
-             repaint();
+             repaint(x);
 
 
         }
@@ -284,7 +285,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener {
                 if (snakeylength[r]>625){
                     snakeylength[r]=75; }
             }
-            repaint();
+            repaint(x);
 
 
         }
